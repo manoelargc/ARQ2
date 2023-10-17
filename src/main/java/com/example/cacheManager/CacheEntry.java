@@ -1,5 +1,8 @@
 package com.example.cacheManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CacheEntry {
     private int index;
     private int data;
@@ -15,5 +18,9 @@ public class CacheEntry {
 
     public int getData() {
         return data;
+    }
+
+    public void setData(int data) {
+        this.data=data;
     }
 }
