@@ -47,7 +47,7 @@ public class CacheSimulator extends Application {
 
         cacheTableView.setStyle("-fx-background-color: #F0F8FF;");
 
-        ComboBox<String> cacheTypeComboBox = new ComboBox<>(FXCollections.observableArrayList("Mapeamento Direto", "Totalmente Associativa", "Associativa por Conjuntos"));
+        ComboBox<String> cacheTypeComboBox = new ComboBox<>(FXCollections.observableArrayList("Mapeamento Direto", "Totalmente Associativa"));
 
         checkButton.setOnAction(e -> {
             String selectedCacheType = cacheTypeComboBox.getValue();
@@ -57,8 +57,6 @@ public class CacheSimulator extends Application {
                         cache = new DirectMappedCache(10);
                     } else if (selectedCacheType.equals("Totalmente Associativa")) {
                         cache = new FullyAssociativeCache(10);
-                    } else if (selectedCacheType.equals("Associativa por Conjuntos")) {
-                        cache = new SetAssociativeCache(4, 10); // 4 conjuntos
                     }
                 }
 
