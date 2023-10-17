@@ -11,6 +11,9 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.List;
 
+
+//main
+
 public class CacheSimulator extends Application {
     public static void main(String[] args) {
         launch(args);
