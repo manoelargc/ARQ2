@@ -53,34 +53,41 @@ public class CacheSimulator extends Application {
 
 
         checkButton.setOnAction(e -> {
-            int data = Integer.parseInt(dataInput.getText());
-            lastInsertedData = data;
             String selectedCacheType = cacheTypeComboBox.getValue();
-            // Crie o cache apropriado com base no tipo selecionado
-            if (selectedCacheType.equals("Mapeamento Direto")) {
-                cache = new DirectMappedCache(10);
-            } else if (selectedCacheType.equals("Totalmente Associativa")) {
-                cache = new FullyAssociativeCache(10);
-            }
+            if (selectedCacheType != null) {
+                if (cache == null) {
+                    if (selectedCacheType.equals("Mapeamento Direto")) {
+                        cache = new DirectMappedCache(10);
+                    } else if (selectedCacheType.equals("Totalmente Associativa")) {
+                        cache = new FullyAssociativeCache(10);
+                    }
+                }
 
-            boolean hit = cache.checkCache(data);
-            if (hit) {
-                resultLabel.setText("Data: " + data + " Hit ");
+                int data = Integer.parseInt(dataInput.getText());
+                lastInsertedData = data;
+
+                boolean hit = cache.checkCache(data);
+                if (hit) {
+                    resultLabel.setText("Data: " + data + " Hit ");
+                } else {
+                    resultLabel.setText("Data: " + data + " Miss");
+                }
+
+
+                //design --> pra deixar marcado o ultimo elemento
+                data = Integer.parseInt(dataInput.getText());
+                insertedData.add(data);
+                lastInsertedData = data;
+
+                // Atualize os dados da tabela
+                updateCacheTable();
+
+                cache.printCache();
             } else {
-                resultLabel.setText("Data: " + data + " Miss");
+                resultLabel.setText("Por favor, selecione um tipo de cache.");
             }
-
-
-            //design --> pra deixar marcado o ultimo elemento
-            data = Integer.parseInt(dataInput.getText());
-            insertedData.add(data);
-            lastInsertedData = data;
-
-            // Atualize os dados da tabela
-            updateCacheTable();
-
-            cache.printCache();
         });
+
 
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(15, 15, 15, 15));

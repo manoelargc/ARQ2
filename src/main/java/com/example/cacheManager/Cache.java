@@ -10,6 +10,10 @@ public class Cache {
     private List<CacheEntry> cache;
     private int cacheSize;
 
+
+    public Cache(){
+
+    }
     public Cache(int size) {
         cacheSize = size;
         cache = new ArrayList<>(cacheSize);

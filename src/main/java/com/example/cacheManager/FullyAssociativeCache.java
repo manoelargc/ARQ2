@@ -1,27 +1,29 @@
 package com.example.cacheManager;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class FullyAssociativeCache extends Cache {
+    private final int size;
+    private final Map<Integer, Integer> cache;
+
     public FullyAssociativeCache(int size) {
-        super(size);
+        this.size = size;
+        this.cache = new LinkedHashMap<Integer, Integer>(size, 0.75f, true) {
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldest) {
+                return size() > size;
+            }
+        };
     }
 
-    @Override
     public boolean checkCache(int data) {
-        // Implementação específica do cache totalmente associativo
-        for (int i = 0; i < getCacheSize(); i++) {
-            if (getCacheData(i) == data) {
-                return true; // Hit no cache
-            }
+        if (cache.containsKey(data)) {
+            return true; // Hit no cache
+        } else {
+            // Miss no cache, substituir o bloco de dados menos recentemente usado
+            cache.put(data, data);
+            return false;
         }
-        // Simular atraso de acesso ao cache
-        try {
-            Thread.sleep(100);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        // Substituir o objeto CacheEntry mais antigo
-        setCacheData(0, data);
-        return false; // Miss no cache
     }
 }
