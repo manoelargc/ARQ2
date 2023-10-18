@@ -19,12 +19,12 @@ public class CacheSimulator extends Application {
         launch(args);
     }
 
-    private Cache cache = new Cache(10);
+    private Cache cache;
     private TableView<CacheEntry> cacheTableView = new TableView<>();
     private List<CacheEntry> cacheData = new ArrayList<>();
     private int lastInsertedData = -1;
 
-    List<Integer> insertedData = new ArrayList<Integer>();
+    private List<Integer> insertedData = new ArrayList<>();
 
     @Override
     public void start(Stage primaryStage) {
@@ -49,33 +49,49 @@ public class CacheSimulator extends Application {
 
         cacheTableView.setStyle("-fx-background-color: #F0F8FF;");
 
+        ComboBox<String> cacheTypeComboBox = new ComboBox<>(FXCollections.observableArrayList("Mapeamento Direto", "Totalmente Associativa"));
 
 
         checkButton.setOnAction(e -> {
-            int data = Integer.parseInt(dataInput.getText());
-            lastInsertedData = data;
-            boolean hit = cache.checkCache(data);
-            if (hit) {
-                resultLabel.setText("Data: " + data + " Hit ");
+            String selectedCacheType = cacheTypeComboBox.getValue();
+            if (selectedCacheType != null) {
+                if (cache == null) {
+                    if (selectedCacheType.equals("Mapeamento Direto")) {
+                        cache = new DirectMappedCache(10);
+                    } else if (selectedCacheType.equals("Totalmente Associativa")) {
+                        cache = new FullyAssociativeCache(10);
+                    }
+                }
+
+                int data = Integer.parseInt(dataInput.getText());
+                lastInsertedData = data;
+
+                boolean hit = cache.checkCache(data);
+                if (hit) {
+                    resultLabel.setText("Data: " + data + " Hit ");
+                } else {
+                    resultLabel.setText("Data: " + data + " Miss");
+                }
+
+
+                //design --> pra deixar marcado o ultimo elemento
+                data = Integer.parseInt(dataInput.getText());
+                insertedData.add(data);
+                lastInsertedData = data;
+
+                // Atualize os dados da tabela
+                updateCacheTable();
+
+                cache.printCache();
             } else {
-                resultLabel.setText("Data: " + data + " Miss");
+                resultLabel.setText("Por favor, selecione um tipo de cache.");
             }
-
-
-            //design
-            data = Integer.parseInt(dataInput.getText());
-            insertedData.add(data);
-            lastInsertedData = data;
-
-            // Atualize os dados da tabela
-            updateCacheTable();
-
-            cache.printCache();
         });
+
 
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(15, 15, 15, 15));
-        layout.getChildren().addAll(dataInput, checkButton, resultLabel, cacheTableView);
+        layout.getChildren().addAll(dataInput,cacheTypeComboBox, checkButton, resultLabel, cacheTableView);
 
         Scene scene = new Scene(layout, 400, 300);
 

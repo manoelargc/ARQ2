@@ -3,10 +3,17 @@ package com.example.cacheManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Cache {
     private List<CacheEntry> cache;
     private int cacheSize;
 
+
+    public Cache(){
+
+    }
     public Cache(int size) {
         cacheSize = size;
         cache = new ArrayList<>(cacheSize);
@@ -44,9 +51,14 @@ public class Cache {
         return cache.get(index).getData();
     }
 
+    public void setCacheData(int index, int data) {
+        cache.get(index).setData(data);
+    }
+
     public void printCache() {
         for (CacheEntry entry : cache) {
             System.out.println("Index: " + entry.getIndex() + " Data: " + entry.getData());
         }
     }
 }
+
