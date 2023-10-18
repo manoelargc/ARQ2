@@ -1,6 +1,5 @@
 package com.example.cacheManager;
 
-//main
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
@@ -9,19 +8,22 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
 import java.util.ArrayList;
 import java.util.List;
+
+
+//main
 
 public class CacheSimulator extends Application {
     public static void main(String[] args) {
         launch(args);
     }
 
-    private Cache cache; // Cache atualmente usado
+    private Cache cache;
     private TableView<CacheEntry> cacheTableView = new TableView<>();
     private List<CacheEntry> cacheData = new ArrayList<>();
     private int lastInsertedData = -1;
+
     private List<Integer> insertedData = new ArrayList<>();
 
     @Override
@@ -49,43 +51,40 @@ public class CacheSimulator extends Application {
 
         ComboBox<String> cacheTypeComboBox = new ComboBox<>(FXCollections.observableArrayList("Mapeamento Direto", "Totalmente Associativa"));
 
+
         checkButton.setOnAction(e -> {
+            int data = Integer.parseInt(dataInput.getText());
+            lastInsertedData = data;
             String selectedCacheType = cacheTypeComboBox.getValue();
-            if (selectedCacheType != null) {
-                if (cache == null) {
-                    if (selectedCacheType.equals("Mapeamento Direto")) {
-                        cache = new DirectMappedCache(10);
-                    } else if (selectedCacheType.equals("Totalmente Associativa")) {
-                        cache = new FullyAssociativeCache(10);
-                    }
-                }
-
-                int data = Integer.parseInt(dataInput.getText());
-                lastInsertedData = data;
-
-                boolean hit = cache.checkCache(data);
-                if (hit) {
-                    resultLabel.setText("Data: " + data + " Hit ");
-                } else {
-                    resultLabel.setText("Data: " + data + " Miss");
-                }
-
-                //design
-                data = Integer.parseInt(dataInput.getText());
-                insertedData.add(data);
-                lastInsertedData = data;
-
-                // Atualize os dados da tabela
-                updateCacheTable();
-                cache.printCache();
-            } else {
-                // Código para lidar com a situação em que nenhum tipo de cache foi selecionado
+            // Crie o cache apropriado com base no tipo selecionado
+            if (selectedCacheType.equals("Mapeamento Direto")) {
+                cache = new DirectMappedCache(10);
+            } else if (selectedCacheType.equals("Totalmente Associativa")) {
+                cache = new FullyAssociativeCache(10);
             }
+
+            boolean hit = cache.checkCache(data);
+            if (hit) {
+                resultLabel.setText("Data: " + data + " Hit ");
+            } else {
+                resultLabel.setText("Data: " + data + " Miss");
+            }
+
+
+            //design --> pra deixar marcado o ultimo elemento
+            data = Integer.parseInt(dataInput.getText());
+            insertedData.add(data);
+            lastInsertedData = data;
+
+            // Atualize os dados da tabela
+            updateCacheTable();
+
+            cache.printCache();
         });
 
         VBox layout = new VBox(10);
         layout.setPadding(new Insets(15, 15, 15, 15));
-        layout.getChildren().addAll(dataInput, cacheTypeComboBox, checkButton, resultLabel, cacheTableView);
+        layout.getChildren().addAll(dataInput,cacheTypeComboBox, checkButton, resultLabel, cacheTableView);
 
         Scene scene = new Scene(layout, 400, 300);
 
@@ -101,6 +100,9 @@ public class CacheSimulator extends Application {
             cacheData.add(new CacheEntry(i, data));
         }
 
+
+
+
         cacheTableView.setRowFactory(tv -> new TableRow<CacheEntry>() {
             @Override
             public void updateItem(CacheEntry item, boolean empty) {
@@ -108,14 +110,16 @@ public class CacheSimulator extends Application {
                 if (item == null) {
                     setStyle("");
                 } else if (item.getData() == lastInsertedData) {
-                    setStyle("-fx-background-color: #ADD8E6;");
+                    setStyle("-fx-background-color: #ADD8E6;"); // azul claro para o último dado inserido
                 } else if (insertedData.contains(item.getData())) {
-                    setStyle("-fx-background-color: #D3D3D3;");
+                    setStyle("-fx-background-color: #D3D3D3;"); // cinza claro para dados inseridos anteriormente
                 } else {
-                    setStyle("-fx-background-color: #FFFFFF;");
+                    setStyle("-fx-background-color: #FFFFFF;"); // branco para todos os outros casos
                 }
             }
         });
+
+
 
         cacheTableView.setItems(FXCollections.observableArrayList(cacheData));
     }
